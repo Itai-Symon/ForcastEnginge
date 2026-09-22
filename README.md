@@ -99,3 +99,4 @@ Each individual simulation run has an internal iteration cap to prevent a theore
 - Accept a velocity trend parameter to model improving/degrading teams.
 - Expose the full simulation output (histogram data) for richer visualisation.
 - Parallelise the simulation loop for large iteration counts.
+- Introduce domain-specific exceptions (e.g. `InsufficientHistoryException`) to allow callers to distinguish between generic invalid-argument errors and domain constraint violations without parsing exception messages.
