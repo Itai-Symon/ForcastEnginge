@@ -21,6 +21,8 @@ public class MonteCarloForecastEngine : IForecastEngine
     {
         ValidateInputs(historicalFeatures, remainingStoryPoints, startDate, targetDate);
 
+        var throughput = BuildWeeklyThroughput(historicalFeatures);
+
         throw new NotImplementedException();
     }
 
@@ -57,5 +59,25 @@ public class MonteCarloForecastEngine : IForecastEngine
                 $"At least {MinimumHistoryWeeks} weeks of historical data are required, " +
                 $"but the provided history spans only {weekCount} week(s).",
                 nameof(historicalFeatures));
+    }
+
+    internal static int[] BuildWeeklyThroughput(IReadOnlyCollection<Feature> features)
+    {
+        var earliest = features.Min(f => f.CompletionDate);
+
+        var buckets = new Dictionary<int, int>();
+        foreach (var feature in features)
+        {
+            var weekIndex = (feature.CompletionDate.DayNumber - earliest.DayNumber) / 7;
+            buckets.TryGetValue(weekIndex, out var current);
+            buckets[weekIndex] = current + feature.StoryPoints;
+        }
+
+        var maxWeek = buckets.Keys.Max();
+        var throughput = new int[maxWeek + 1];
+        foreach (var (weekIndex, points) in buckets)
+            throughput[weekIndex] = points;
+
+        return throughput;
     }
 }
