@@ -17,6 +17,22 @@ public class ForecastTests
     private static readonly DateOnly Start  = new(2025, 1, 1);
     private static readonly DateOnly Target = new(2025, 6, 1);
 
+    // ── Constructor validation ───────────────────────────────────────────────
+
+    [Fact]
+    public void ZeroIterations_ThrowsArgumentOutOfRangeException()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            new MonteCarloForecastEngine(iterations: 0));
+    }
+
+    [Fact]
+    public void NegativeIterations_ThrowsArgumentOutOfRangeException()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            new MonteCarloForecastEngine(iterations: -1));
+    }
+
     // ── Input validation ────────────────────────────────────────────────────
 
     [Fact]

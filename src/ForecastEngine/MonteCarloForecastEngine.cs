@@ -9,6 +9,8 @@ public class MonteCarloForecastEngine : IForecastEngine
 
     public MonteCarloForecastEngine(int iterations = 10_000, int? seed = null)
     {
+        if (iterations <= 0)
+            throw new ArgumentOutOfRangeException(nameof(iterations), "Iterations must be greater than zero.");
         _iterations = iterations;
         _seed = seed;
     }
@@ -39,7 +41,7 @@ public class MonteCarloForecastEngine : IForecastEngine
             P50CompletionDate: PercentileDate(weeksToComplete, _iterations, 0.50, startDate),
             P85CompletionDate: PercentileDate(weeksToComplete, _iterations, 0.85, startDate),
             P95CompletionDate: PercentileDate(weeksToComplete, _iterations, 0.95, startDate),
-            SimulationWeeks: weeksToComplete);
+            SimulationWeeks: Array.AsReadOnly(weeksToComplete));
     }
 
     private static void ValidateInputs(
