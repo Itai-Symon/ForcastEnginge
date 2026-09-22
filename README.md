@@ -89,6 +89,7 @@ Each individual simulation run has an internal iteration cap to prevent a theore
 - Does not account for team size changes, process changes, or known upcoming holidays.
 - Story Point estimation drift over time will degrade forecast accuracy.
 - Very sparse histories (even if ≥ 4 weeks) with many zeros will produce wide, uncertain forecast ranges — which is honest, but may feel unhelpful.
+- If the throughput history consists entirely of zero-point weeks, no Story Points can ever be accumulated and every simulation will hit the internal safety cap (10,000 weeks ≈ 192 years). In this case all percentile dates return `DateOnly.MaxValue`. This is an extreme edge case — any history that contains at least one non-zero week will eventually produce a result, since the safety cap is large enough to cover any realistic team pace.
 - Percentile dates are snapped to week boundaries (multiples of 7 days from `startDate`).
 
 ---

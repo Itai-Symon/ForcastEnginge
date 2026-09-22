@@ -24,7 +24,21 @@ public class MonteCarloForecastEngine : IForecastEngine
         var throughput = BuildWeeklyThroughput(historicalFeatures);
         var weeksToComplete = RunSimulations(throughput, remainingStoryPoints, _iterations, _seed);
 
-        throw new NotImplementedException();
+        // Sort ascending so that index i represents the i-th fastest simulation,
+        // enabling O(1) percentile lookup (e.g. index 8500 out of 10000 = P85).
+        Array.Sort(weeksToComplete);
+
+        var maxWeeks = (targetDate.DayNumber - startDate.DayNumber) / 7;
+        var completedInTime = weeksToComplete.Count(w => w <= maxWeeks);
+        // Divide by _iterations (not weeksToComplete.Length) so that simulations
+        // that never finished (safety cap hit) count as failures, not missing data.
+        var probability = (double)completedInTime / _iterations;
+
+        return new ForecastResult(
+            ProbabilityOfCompletion: probability,
+            P50CompletionDate: PercentileDate(weeksToComplete, _iterations, 0.50, startDate),
+            P85CompletionDate: PercentileDate(weeksToComplete, _iterations, 0.85, startDate),
+            P95CompletionDate: PercentileDate(weeksToComplete, _iterations, 0.95, startDate));
     }
 
     private static void ValidateInputs(
@@ -60,6 +74,14 @@ public class MonteCarloForecastEngine : IForecastEngine
                 $"At least {MinimumHistoryWeeks} weeks of historical data are required, " +
                 $"but the provided history spans only {weekCount} week(s).",
                 nameof(historicalFeatures));
+    }
+
+    private static DateOnly PercentileDate(int[] sortedWeeks, int totalIterations, double percentile, DateOnly startDate)
+    {
+        var index = (int)(percentile * totalIterations);
+        if (index >= sortedWeeks.Length)
+            return DateOnly.MaxValue;
+        return startDate.AddDays(sortedWeeks[index] * 7);
     }
 
     internal static int[] RunSimulations(int[] throughput, int remainingStoryPoints, int iterations, int? seed)
