@@ -1,0 +1,31 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForecastEngine", "src\ForecastEngine\ForecastEngine.csproj", "{C8942D34-5215-47E1-B8AE-437D021B85F3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForecastEngine.Tests", "tests\ForecastEngine.Tests\ForecastEngine.Tests.csproj", "{208F4176-E0C5-464C-8B11-1734636A383C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForecastEngine.Sample", "samples\ForecastEngine.Sample\ForecastEngine.Sample.csproj", "{303259A6-2BCD-4C07-AD88-8566F0BFEFEB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C8942D34-5215-47E1-B8AE-437D021B85F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8942D34-5215-47E1-B8AE-437D021B85F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8942D34-5215-47E1-B8AE-437D021B85F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8942D34-5215-47E1-B8AE-437D021B85F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{208F4176-E0C5-464C-8B11-1734636A383C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{208F4176-E0C5-464C-8B11-1734636A383C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{208F4176-E0C5-464C-8B11-1734636A383C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{208F4176-E0C5-464C-8B11-1734636A383C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{303259A6-2BCD-4C07-AD88-8566F0BFEFEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{303259A6-2BCD-4C07-AD88-8566F0BFEFEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{303259A6-2BCD-4C07-AD88-8566F0BFEFEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{303259A6-2BCD-4C07-AD88-8566F0BFEFEB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
