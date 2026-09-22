@@ -4,4 +4,5 @@ public record ForecastResult(
     double ProbabilityOfCompletion,
     DateOnly P50CompletionDate,
     DateOnly P85CompletionDate,
-    DateOnly P95CompletionDate);
+    DateOnly P95CompletionDate,
+    IReadOnlyList<int> SimulationWeeks);

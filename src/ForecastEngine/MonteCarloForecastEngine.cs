@@ -38,7 +38,8 @@ public class MonteCarloForecastEngine : IForecastEngine
             ProbabilityOfCompletion: probability,
             P50CompletionDate: PercentileDate(weeksToComplete, _iterations, 0.50, startDate),
             P85CompletionDate: PercentileDate(weeksToComplete, _iterations, 0.85, startDate),
-            P95CompletionDate: PercentileDate(weeksToComplete, _iterations, 0.95, startDate));
+            P95CompletionDate: PercentileDate(weeksToComplete, _iterations, 0.95, startDate),
+            SimulationWeeks: weeksToComplete);
     }
 
     private static void ValidateInputs(
