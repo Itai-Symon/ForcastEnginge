@@ -6,8 +6,21 @@ A .NET 8 library that estimates the probability of a software release completing
 
 ## How to Run the Sample
 
+**Prerequisites:** .NET 8 SDK or later — download from [dot.net](https://dot.net/download).
+
+Run the sample console app (three forecast scenarios with ASCII histogram):
 ```bash
 dotnet run --project samples/ForecastEngine.Sample
+```
+
+Run the unit tests:
+```bash
+dotnet test
+```
+
+Build the entire solution:
+```bash
+dotnet build
 ```
 
 ---
@@ -43,11 +56,43 @@ The engine uses **Monte Carlo simulation with bootstrap resampling**. Rather tha
 
 ---
 
+## Solution Structure
+
+```
+ForecastEngine.sln
+├── src/ForecastEngine/              # Class library — the core engine
+│   ├── IForecastEngine.cs           # Public interface: the contract callers depend on
+│   ├── MonteCarloForecastEngine.cs  # Implementation: simulation, throughput, percentiles
+│   ├── Feature.cs                   # Input record: a single completed historical feature
+│   ├── ForecastResult.cs            # Output record: probability, percentile dates, raw weeks
+│   └── AssemblyInfo.cs              # Grants test project access to internal members
+│
+├── tests/ForecastEngine.Tests/      # xUnit test project
+│   ├── BuildWeeklyThroughputTests.cs  # Unit tests for weekly bucketing logic
+│   ├── RunSimulationsTests.cs         # Unit tests for the simulation loop
+│   └── ForecastTests.cs               # End-to-end tests for input validation and results
+│
+└── samples/ForecastEngine.Sample/   # Console app — usage demonstration
+    └── Program.cs                   # Three forecast scenarios with ASCII histogram
+```
+
+### Responsibility of each file
+
+| File | Responsibility |
+|---|---|
+| `IForecastEngine` | Defines the public contract. Callers depend on this, not the concrete class — making the engine swappable. |
+| `MonteCarloForecastEngine` | Implements the full forecast pipeline: validate → build throughput → simulate → compute results. |
+| `Feature` | Immutable data record representing one completed item of historical work. |
+| `ForecastResult` | Immutable data record carrying all outputs: probability, three percentile dates, and raw simulation weeks for visualisation. |
+| `AssemblyInfo` | Contains `[InternalsVisibleTo]` so the test project can access `internal` methods without making them `public`. |
+
+---
+
 ## Design Decisions
 
 ### Unit of time: week
 
-Throughput is measured in **weeks** (7-day windows). This is a configurable parameter (`TimeUnit`), defaulting to `Week`. Days are a supported extension point for future use.
+Throughput is measured in **weeks** (7-day windows). The week size is hardcoded to 7 days; support for day-level granularity is a noted future improvement.
 
 Weeks are anchored to the **earliest completion date in the history** and counted forward — not aligned to Monday/ISO week boundaries. This avoids arbitrary edge effects at week boundaries.
 
@@ -96,8 +141,8 @@ Each individual simulation run has an internal iteration cap to prevent a theore
 
 ## Future Improvements
 
-- Support `TimeUnit.Day` for day-level granularity.
-- Accept a velocity trend parameter to model improving/degrading teams.
-- Expose the full simulation output (histogram data) for richer visualisation.
+- Support day-level granularity (currently fixed at 7-day weeks).
+- Accept a velocity trend parameter to model improving or degrading teams.
+- Separate `SimulationWeeks` from `ForecastResult` into a dedicated details type, so callers who only need the summary are not burdened with raw simulation data.
 - Parallelise the simulation loop for large iteration counts.
 - Introduce domain-specific exceptions (e.g. `InsufficientHistoryException`) to allow callers to distinguish between generic invalid-argument errors and domain constraint violations without parsing exception messages.
